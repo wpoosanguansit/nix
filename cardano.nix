@@ -17,7 +17,7 @@
   ];
 
   # File systems configuration for using the installer's partition layout
-  fileSystems = {
+  fileSystems = {wpli
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
@@ -49,13 +49,17 @@
   services.xserver.enable = true;
   services.xserver.videoDrivers = [ "modesetting" ];
 
-  # Enable Kodi
-  services.xserver.desktopManager.xfce.enable = true;
+  # if you use pulseaudio
+  nixpkgs.config.pulseaudio = true;
 
-  # Enable slim autologin
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.displayManager.lightdm.autoLogin.enable = true;
-  services.xserver.displayManager.lightdm.autoLogin.user = "kodi";
+  services.xserver = {
+    enable = true;
+    desktopManager = {
+      default = "xfce";
+      xterm.enable = false;
+      xfce.enable = true;
+    };
+  };
 
   # Define a user account
   users.extraUsers.kodi.isNormalUser = true;
