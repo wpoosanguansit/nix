@@ -34,9 +34,31 @@
   services.jormungandr.genesisBlockFile = "/var/lib/jormungandr/block-0.bin";
   services.jormungandr.secretFile = "/etc/secrets/jormungandr.yaml";
 
+
+  # Preserve space by sacrificing documentation and history
+  services.nixosManual.enable = false;
+  nix.gc.automatic = true;
+  nix.gc.options = "--delete-older-than 30d";
+  boot.cleanTmpDir = true;
+
   # Configure basic SSH access
   services.openssh.enable = true;
   services.openssh.permitRootLogin = "yes";
+  
+  # Enable X11 windowing system
+  services.xserver.enable = true;
+  services.xserver.videoDrivers = [ "modesetting" ];
+
+  # Enable Kodi
+  services.xserver.desktopManager.xfce.enable = true;
+
+  # Enable slim autologin
+  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.displayManager.lightdm.autoLogin.enable = true;
+  services.xserver.displayManager.lightdm.autoLogin.user = "kodi";
+
+  # Define a user account
+  users.extraUsers.kodi.isNormalUser = true;
 
   # Use 1GB of additional swap memory in order to not run out of memory
   # when installing lots of things while running other things at the same time.
