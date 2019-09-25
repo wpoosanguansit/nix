@@ -17,7 +17,7 @@
   ];
 
   # File systems configuration for using the installer's partition layout
-  fileSystems = {wpli
+  fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
@@ -46,7 +46,6 @@
   services.openssh.permitRootLogin = "yes";
   
   # Enable X11 windowing system
-  services.xserver.enable = true;
   services.xserver.videoDrivers = [ "modesetting" ];
 
   # if you use pulseaudio
