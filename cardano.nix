@@ -50,15 +50,15 @@
   # Configure basic SSH access
   services.openssh.enable = true;
   services.openssh.permitRootLogin = "yes";
-  
-  # Enable X11 windowing system
-  services.xserver.videoDrivers = [ "modesetting" ];
+ 
 
   # if you use pulseaudio
   nixpkgs.config.pulseaudio = true;
 
+  # Enable X11 windowing system
   services.xserver = {
     enable = true;   
+    videoDrivers = [ "modesetting" ];
     desktopManager = {
       default = "xfce";
       xterm.enable = false;
