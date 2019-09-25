@@ -1,22 +1,22 @@
 { config, pkgs, lib, ... }:
 {
+
   # NixOS wants to enable GRUB by default
   boot.loader.grub.enable = false;
-
-  # if you have a Raspberry Pi 2 or 3, pick this:
+  # Enables the generation of /boot/extlinux/extlinux.conf
+  boot.loader.generic-extlinux-compatible.enable = true;
+ 
+  # !!! If your board is a Raspberry Pi 1, select this:
+  # boot.kernelPackages = pkgs.linuxPackages_rpi;
+  # !!! Otherwise (even if you have a Raspberry Pi 2 or 3), pick this:
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  
+  # !!! This is only for ARMv6 / ARMv7. Don't enable this on AArch64, cache.nixos.org works there.
+  # nix.binaryCaches = lib.mkForce [ "http://nixos-arm.dezgeg.me/channel" ];
+  # nix.binaryCachePublicKeys = [ "nixos-arm.dezgeg.me-1:xBaUKS3n17BZPKeyxL4JfbTqECsT+ysbDJz29kLFRW0=%" ];
 
-  # A bunch of boot parameters needed for optimal runtime on RPi 3b+
-  boot.kernelParams = ["cma=256M"];
-  boot.loader.raspberryPi.enable = true;
-  boot.loader.raspberryPi.version = 3;
-  boot.loader.raspberryPi.uboot.enable = true;
-  boot.loader.raspberryPi.firmwareConfig = ''
-    gpu_mem=256
-  '';
-  environment.systemPackages = with pkgs; [
-    raspberrypi-tools
-  ];
+  # !!! Needed for the virtual console to work on the RPi 3, as the default of 16M doesn't seem to be enough.
+  boot.kernelParams = ["cma=128M"];
 
   # File systems configuration for using the installer's partition layout
   fileSystems = {
@@ -55,21 +55,63 @@
   # if you use pulseaudio
   nixpkgs.config.pulseaudio = true;
 
-  # Enable X11 windowing system
+  environment.systemPackages = with pkgs; [
+    raspberrypi-tools
+    wget
+    binutils
+    mc
+    nix
+    gitAndTools.gitFull
+    vim
+    #firefox-bin
+    #chromium
+    tmux
+    #haskellPackages.xmonad
+    #haskellPackages.xmobar
+    xfontsel
+    xlsfonts
+    xscreensaver
+    awesome
+    dmenu
+    xclip
+    lilyterm
+  ];
+ 
   services.xserver = {
-    enable = true;   
-    videoDrivers = [ "modesetting" ];
-    desktopManager = {
-      default = "xfce";
-      xterm.enable = false;
-      xfce = {
+    enable = true;
+    layout = "us";
+    
+    videoDrivers = ["modesetting"];
+
+  #  #windowManager.xmonad = {
+  #  #  enable = true;
+  #  #  enableContribAndExtras = true;
+  #  #};
+    
+    windowManager.awesome = {
+       enable = true;
+    };
+
+    windowManager.default = "awesome";
+
+    displayManager = {
+      slim = {
         enable = true;
-        noDesktop = true;
-        enableXfwm = false;
+        defaultUser = "alex";
       };
     };
-    windowManager.i3.enable = true;
   };
+
+  programs.ssh.startAgent = true;
+
+  users.extraUsers.alex = {
+    isNormalUser = true;
+    uid = 1000;
+  };  
+
+  system.stateVersion = "unstable";
+
+  nixpkgs.config.allowUnfree = true;
 
   # Use 1GB of additional swap memory in order to not run out of memory
   # when installing lots of things while running other things at the same time.
