@@ -53,12 +53,17 @@
   nixpkgs.config.pulseaudio = true;
 
   services.xserver = {
-    enable = true;
+    enable = true;   
     desktopManager = {
       default = "xfce";
       xterm.enable = false;
-      xfce.enable = true;
+      xfce = {
+        enable = true;
+        noDesktop = true;
+        enableXfwm = false;
+      };
     };
+    windowManager.i3.enable = true;
   };
 
   # Use 1GB of additional swap memory in order to not run out of memory
