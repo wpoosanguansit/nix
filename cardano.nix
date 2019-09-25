@@ -36,9 +36,9 @@
   nixpkgs.config.allowUnfree = true;
 
   # Jormungandr blochchain node
-  services.jormungandr.enable = true;
-  services.jormungandr.genesisBlockFile = "/var/lib/jormungandr/block-0.bin";
-  services.jormungandr.secretFile = "/etc/secrets/jormungandr.yaml";
+  # services.jormungandr.enable = true;
+  # services.jormungandr.genesisBlockFile = "/var/lib/jormungandr/block-0.bin";
+  # services.jormungandr.secretFile = "/etc/secrets/jormungandr.yaml";
 
 
   # Preserve space by sacrificing documentation and history
